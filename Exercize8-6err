@@ -1,0 +1,109 @@
+//name
+//date
+//file:
+/*Purpose: Write a program that processes the test data. The output should be the student’s ID, followed by the answers, followed by the test score, followed by the test grade. */
+/*I Changed the variable "score" from an integer to a double.
+This stopped a rounding error that continued to return "0" as the score 
+for anything under 40/40 */
+
+
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+using namespace std;
+
+//declarations
+const int NO_OF_QUESTIONS = 20;
+
+char examGrade(int score);
+
+int main() 
+{
+    // Write your main here
+    //declarations
+    char keyString[NO_OF_QUESTIONS + 1];
+    char answerString[NO_OF_QUESTIONS +1];
+    char ID[9];
+    char ch;
+
+    int score;
+    int len;
+    ifstream infile;
+
+    int i;
+
+    // open fille
+    infile.open ("Ch8_Ex6Data.txt");
+    if (!infile)
+    {
+      cout << "cannot open the input file. Program Terminates!" << endl;
+      return 1;
+    }
+  // read the key
+  cout << "Processing Data"<< endl;
+  infile.get(keyString, 21);
+  //output key
+  cout << "key:     " << keyString<< endl;
+
+  //read ID and each answer
+  infile >> ID;
+  infile.get(ch);
+  infile.get(answerString, 21);
+
+  while(infile)
+  {
+    len = strlen(answerString);
+      for (i = len; i <20; i++)
+      answerString[i] = ' ';
+      answerString[20] = '\0';
+
+      score = 0;
+
+      for(i = 0; i < 20; i++)
+      if( answerString[i] != ' ')
+      {
+        if (answerString[i] == keyString[i]) 
+        score = score + 2;
+        else
+          score = score - 1;
+      }
+      //output answer
+      cout << ID << " " << answerString << " " << score
+      << " " << examGrade(score) << endl;
+      //call function
+      infile >> ID;
+      infile.get(ch);
+      infile.get(answerString, 21);
+    
+  }
+  cout << endl;
+  infile.close();
+  return 0;
+}
+
+//function examGrade
+char examGrade(int score)
+{
+  switch (static_cast<int>(score / 40 * 10))
+  {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return 'F';
+    case 6:
+      return 'D';
+    case 7:
+      return 'C';
+    case 8:
+      return 'B';
+    case 9:
+    case 10:
+      return 'A';
+    default: 
+      return 'F';
+  }
+}
